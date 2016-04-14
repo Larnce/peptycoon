@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head><style type="text/css">body {
+    font-family: "Helvetica Neue", Helvetica, Arial, san-serif;
+    font-size: 1em;
+    font-weight: 200;
+}
+
+h2 {
+    font-weight: 300;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+  text-shadow: 2px 2px black;
+}
+h4 {
+    font-weight: 00;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    color: white;
+    font-size: 40;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-shadow: 2px 2px black;
+}
+  h3 {
+    font-weight: 100;
+    color:#000000;
+    
+  }
+
+div.panel {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    margin-bottom: 10px;
+    background-color: #FFFFFF;
+  
+}
+
+span.info {
+    font-size: 0.75em;
+    font-style: italic;
+}
+
+.textWrapRight {
+  clear: left;
+  float: right;
+  margin-right: 10px;
+}</style></head><body background="http://www.hdblog.it/img/id409943.jpg"><center><h4>P E P - T Y C O O N</h4></center> <left><button class="build" id="save">Save</button></left>
+  <left><button class="build" id="load">Load</button></left>
+
+<center><img src="http://i.imgur.com/zegN4Ru.png" width="100" height="100">
+<div class="">
+  <h2>Peps:</h2> <span id="res-pep">0</span><br>
+    <button class="build" id="gather-pep">Trap</button>
+</div></center>
+<h2>Resources</h2>
+<div class="panel res">
+    Guns: <span id="res-scrap">20</span><br>
+    <button class="build" id="gather-scrap">Gather</button>
+</div>
+<div class="panel res">
+    Vodka: <span id="res-vodka">0</span><br>
+    <button class="build" id="gather-vodka">Gather</button>
+</div>
+
+
+<h2>Russians</h2>
+<div class="panel robot">
+    Dimitri: <span id="rob-e">0</span><br>
+    <span class="info">Gathers 1 Guns / s</span><br>
+    <button class="build" id="build-rob-e">Build (10 Guns)</button>
+</div>
+<div class="panel robot">
+    Nikolai: <span id="rob-z">0</span><br>
+    <span class="info">Gathers 10 Guns / s</span><br>
+    <button class="build" id="build-rob-z">Build (250 Guns)</button>
+</div>
+  <h2>Upgrades</h2>
+  <div class="panel upgrade">
+<button id="novice-training">Dimitri Training</button>
+Transform 5 Dimitri's into a Nikolai at no additional cost<br>
+  </div>
+  <div class="panel upgrade">
+<button id="journeyman-training">Journeyman Training</button>
+Transform 5 Journeymen into an Expert at no additional cost<br>
+</div>
+<div class="panel upgrade">
+<button id="expert-training">Expert Training</button>
+Transform 5 Experts into a Master at no additional cost<br>
+</div><script>window.addEventListener('load', function() {
+    var elements = {
+        txtScrap: document.querySelector("#res-scrap"),
+        txtVodka: document.querySelector("#res-vodka"),
+        txtpep: document.querySelector("#res-pep"),
+        txtRobotsTypeE: document.querySelector("#rob-e"),
+        btnRobotsTypeE: document.querySelector("#build-rob-e"),
+        txtRobotsTypeZ: document.querySelector("#rob-z"),
+        btnRobotsTypeZ: document.querySelector("#build-rob-z")
+    };
+    
+    var numScrap = 0;
+    var numVodka = 0;
+    var numpep = 0;
+    var robotsTypeE = {
+        count: 0,
+        cost: 10,
+        scrap: 1
+    };
+    var robotsTypeZ = {
+        count: 0,
+        cost: 250,
+        scrap: 10
+    };
+    
+    document.querySelector("#gather-scrap").addEventListener('click', function(evt) {
+        numScrap++;
+        updateScrapText();
+    });
+      document.querySelector("#gather-vodka").addEventListener('click', function(evt) {
+        numVodka++;
+        updateVodkaText();
+    });
+        document.querySelector("#gather-pep").addEventListener('click', function(evt) {
+        numpep++;
+        updatepepText();
+    });
+          document.querySelector("#save").addEventListener('click', function(evt) {
+        localStorage.setitem('peptycoon', JSON.stringify(peptycoon));
+    });
+            document.querySelector("#load").addEventListener('click', function(evt) {
+        myObject = JSON.parse(localStorage.getItem('peptycoon'));
+    });
+    
+    document.querySelector("#build-rob-e").addEventListener('click', function(evt) {
+        if (numScrap < robotsTypeE.cost) return;
+        
+        robotsTypeE.count += 1;
+        numScrap -= robotsTypeE.cost;
+        robotsTypeE.cost = Math.ceil(robotsTypeE.cost * 1.25);
+        updateTypeEText();
+        updateScrapText();
+    });
+    
+    document.querySelector("#build-rob-z").addEventListener('click', function(evt) {
+        if (numScrap < robotsTypeZ.cost) return;
+        
+        robotsTypeZ.count += 1;
+        numScrap -= robotsTypeZ.cost;
+        robotsTypeZ.cost = Math.ceil(robotsTypeZ.cost * 1.25);
+        updateTypeZText();
+        updateScrapText();
+    });
+    
+    function updateScrapText() {
+        elements.txtScrap.innerHTML = numScrap;
+    }
+  
+      function updateVodkaText() {
+        elements.txtVodka.innerHTML = numVodka;
+    }
+        function updatepepText() {
+        elements.txtpep.innerHTML = numpep;
+    }
+    
+    function updateTypeEText() {
+        elements.txtRobotsTypeE.innerHTML = robotsTypeE.count;
+        elements.btnRobotsTypeE.innerHTML = "Build (" + robotsTypeE.cost + ")";
+    }
+    
+    function updateTypeZText() {
+        elements.txtRobotsTypeZ.innerHTML = robotsTypeZ.count;
+        elements.btnRobotsTypeZ.innerHTML = "Build (" + robotsTypeZ.cost + ")";
+      
+    }
+    
+    function gameLoop() {
+        numScrap += Math.ceil(robotsTypeE.count * robotsTypeE.scrap);
+        numScrap += Math.ceil(robotsTypeZ.count * robotsTypeZ.scrap);
+        updateScrapText();
+        window.setTimeout(gameLoop, 1000);
+    }
+    
+    gameLoop();
+
+});</script></body>
